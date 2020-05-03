@@ -199,11 +199,16 @@ void Expression::tokenize() {
             Token& stackTop = tokenStack.top();
             if(stackTop.getType() == TokenType::BRACKET_OPEN) {
                 tokenStack.push(t);
-            } else if(t.getPriority() < stackTop.getPriority()) {
-                tokens.push_back(stackTop);
-                tokenStack.pop();
-                tokenStack.push(t);
             } else {
+                while(stackTop.getType() != TokenType::BRACKET_OPEN && t.getPriority() < stackTop.getPriority()) {
+                    tokens.push_back(stackTop);
+                    tokenStack.pop();
+
+                    if(!tokenStack.size()) {
+                        break;
+                    }
+                    stackTop = tokenStack.top();
+                }
                 tokenStack.push(t);
             }
         }
