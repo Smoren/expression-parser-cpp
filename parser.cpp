@@ -53,9 +53,9 @@ Token::Token(std::string value) : value(value) {
         type = TokenType::OP_COMPARISON_MORE_EQUAL;
     } else if(value == "<=") {
         type = TokenType::OP_COMPARISON_LESS_EQUAL;
-    } else if(value == "&") {
+    } else if(value == "&" || value == "AND") {
         type = TokenType::OP_LOGICAL_AND;
-    } else if(value == "|") {
+    } else if(value == "|" || value == "OR") {
         type = TokenType::OP_LOGICAL_OR;
     } else {
         long digitsCount = std::count_if(value.begin(), value.end(), [](unsigned char c) {
@@ -133,6 +133,10 @@ void Expression::tokenize() {
     for(char ch : input) {
         switch(ch) {
             case ' ':
+                if(buf.str().size()) {
+                    _tokens.push_back(Token(buf.str()));
+                    buf.str("");
+                }
                 continue;
             case '(':
             case ')':
@@ -140,11 +144,12 @@ void Expression::tokenize() {
             case '-':
             case '*':
             case '/':
-            case '>':
-            case '<':
-            case '=':
-            case '&':
-            case '|': {
+            //case '>':
+            //case '<':
+            //case '=':
+            //case '&':
+            //case '|':
+            {
                 if(buf.str().size()) {
                     _tokens.push_back(Token(buf.str()));
                     buf.str("");
@@ -223,8 +228,9 @@ void Expression::tokenize() {
     }
 
     if(nestedLevel != 0) {
-        std::cout << nestedLevel << std::endl;
-        throw std::runtime_error("nested level error: ");
+        std::stringstream ss;
+        ss << "nested level error: " << nestedLevel;
+        throw std::runtime_error(ss.str());
     }
 }
 

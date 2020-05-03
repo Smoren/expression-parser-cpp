@@ -52,7 +52,7 @@ int main()
     //testConstExpression();
 
     //Expression expr("((1+2)*3+4*5)*5+6*(7-8)");
-    Expression expr("((1+x)*y+4*5)*y+6*(x-y) < 157+1");
+    Expression expr("((1+x)*y+4*5)*y+6*(x-y) >= 157+1");
     //Expression expr("1 + 3 * 2 = 157");
     //Expression expr("(x+y)*y + 10*y + (22+y)");
     //Expression expr("x*y+6*(3-2)-1");
