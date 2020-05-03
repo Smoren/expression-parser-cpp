@@ -122,7 +122,7 @@ std::ostream& operator <<(std::ostream& stream, const Token& item) {
 }
 
 Expression::Expression(std::string input) : input(input) {
-
+    parse();
 }
 
 void Expression::tokenize() {
@@ -130,7 +130,9 @@ void Expression::tokenize() {
     std::deque<Token> _tokens;
 
     // сначала распарсим токены
-    for(char ch : input) {
+    for(auto it = input.begin(); it != input.end(); ++it) {
+        char ch = *it;
+
         switch(ch) {
             case ' ':
                 if(buf.str().size()) {
@@ -144,15 +146,19 @@ void Expression::tokenize() {
             case '-':
             case '*':
             case '/':
-            //case '>':
-            //case '<':
-            //case '=':
-            //case '&':
-            //case '|':
-            {
+            case '<':
+            case '>': {
                 if(buf.str().size()) {
                     _tokens.push_back(Token(buf.str()));
                     buf.str("");
+                }
+
+                if((ch == '>' || ch == '<') && *(std::next(it)) == '=') {
+                    ++it;
+                    buf << ch << "=";
+                    _tokens.push_back(Token(buf.str()));
+                    buf.str("");
+                    break;
                 }
 
                 buf << ch;
@@ -179,6 +185,11 @@ void Expression::tokenize() {
         Token& t = _tokens.front();
         TokenType type = t.getType();
         _tokens.pop_front();
+
+        if(t.getType() == TokenType::VARIABLE) {
+            variables.insert(t.getStringValue());
+        }
+
         if(type == TokenType::BRACKET_OPEN) {
             ++nestedLevel;
             tokenStack.push(t);
@@ -237,14 +248,10 @@ void Expression::tokenize() {
 void Expression::parse() {
     tokenize();
 
-    std::cout << input << std::endl;
-    for(auto& token : tokens) {
-        std::cout << token.getStringValue() << " ";
-    }
-    std::cout << std::endl;
-
     std::stack< std::shared_ptr<Node> > operandStack;
     std::stack<TokenType> operatorStack;
+
+    auto tokensBuf = tokens;
 
     while(tokens.size()) {
         Token& t = tokens.front();
@@ -318,6 +325,8 @@ void Expression::parse() {
         throw std::runtime_error("smth went wrong");
     }
 
+    tokens = tokensBuf;
+
     nodes.push(operandStack.top());
 }
 
@@ -335,6 +344,18 @@ std::string Expression::getInput() const {
 
 const std::deque<Token>& Expression::getTokens() const {
     return tokens;
+}
+
+const std::set<std::string>& Expression::getVariables() const {
+    return variables;
+}
+
+std::string Expression::getPolishNotation() const {
+    std::stringstream ss;
+    for(auto& token : tokens) {
+        ss << token.getStringValue() << " ";
+    }
+    return ss.str();
 }
 
 std::ostream& operator <<(std::ostream& stream, const Expression& expr) {

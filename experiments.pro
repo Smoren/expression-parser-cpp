@@ -6,9 +6,11 @@ CONFIG -= qt
 SOURCES += \
         main.cpp \
         node.cpp \
-        parser.cpp
+        parser.cpp \
+        testing.cpp
 
 HEADERS += \
     mysharedpointer.h \
     node.h \
-    parser.h
+    parser.h \
+    testing.h

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <set>
 #include <deque>
 #include <stack>
 #include <map>
@@ -60,15 +61,19 @@ std::ostream& operator <<(std::ostream& stream, const Token& item);
 class Expression {
 public:
     explicit Expression(std::string input);
-    void tokenize();
-    void parse();
     NodeValue eval(std::map<std::string, NodeValue> vars);
     std::string getInput() const;
     const std::deque<Token>& getTokens() const;
+    const std::set<std::string>& getVariables() const;
+    std::string getPolishNotation() const;
 protected:
     std::string input;
     std::deque<Token> tokens;
     std::stack< std::shared_ptr<Node> > nodes;
+    std::set<std::string> variables;
+
+    void tokenize();
+    void parse();
 };
 
 std::ostream& operator <<(std::ostream& stream, const Expression& item);
