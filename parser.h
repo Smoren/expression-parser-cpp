@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <deque>
 #include <stack>
 #include <map>
 #include <iostream>
@@ -42,24 +42,15 @@ std::ostream& operator <<(std::ostream& stream, const TokenPriority& item);
 
 class Token {
 public:
-    explicit Token(std::string value, int depthLevel, int index);
+    explicit Token(std::string value);
     std::string getValue() const;
     TokenType getType() const;
     int getPriority() const;
-    int getDefaultPriority() const;
-    void boostPriority(int value);
-    void boostPriority(Token& op);
-    int getConstOperandCount() const;
     double getDoubleValue() const;
     std::string getStringValue() const;
-    int getIndex() const;
 protected:
     std::string value;
     TokenType type;
-    int priority;
-    int constOperandCount;
-    int index;
-    Token* linkedOperator;
 
     static const std::map<TokenType, TokenPriority> priorityMap;
 };
@@ -72,16 +63,11 @@ public:
     void tokenize();
     void parse();
     NodeValue eval(std::map<std::string, NodeValue> vars);
-    void addToken(std::string token, int& depthLevel, int index);
     std::string getInput() const;
-    const std::vector<Token>& getTokens() const;
-    const std::vector<Token>& getOperands() const;
-    const std::vector<Token>& getOperators() const;
+    const std::deque<Token>& getTokens() const;
 protected:
     std::string input;
-    std::vector<Token> tokens;
-    std::vector<Token> operands;
-    std::vector<Token> operators;
+    std::deque<Token> tokens;
     std::stack< std::shared_ptr<Node> > nodes;
 };
 
