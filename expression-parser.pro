@@ -10,7 +10,6 @@ SOURCES += \
         testing.cpp
 
 HEADERS += \
-    mysharedpointer.h \
     node.h \
     parser.h \
     testing.h

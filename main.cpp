@@ -1,26 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include "mysharedpointer.h"
 #include "node.h"
 #include "parser.h"
 #include "testing.h"
 
 using namespace std;
-
-void testMySharedPointer() {
-        vector<MySharedPointer<int>> v;
-        for(int i=0; i<3; i++) {
-            v.push_back(MySharedPointer<int>(new int(i)));
-        }
-
-        cout << *(v[0].get()) << endl;
-
-        MySharedPointer<int> p11 = v[1];
-        MySharedPointer<int> p12 = v[1];
-
-        cout << "finish" << endl;
-}
 
 string getExpressionFromInput(istream& stream) {
     string result;
